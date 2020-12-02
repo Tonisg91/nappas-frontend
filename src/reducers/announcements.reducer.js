@@ -13,7 +13,7 @@ export const getList = data => ({
 export default (state = [], action) => {
     switch (action.type) {
         case GET_LIST:
-            console.log('GET_LIST')
+            
             break;
         default:
             return state

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import { connect, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 import { getList } from '../reducers/announcements.reducer'
 import useFecth from '../hooks/useFetch'
 
 function Home({data}) {
-    //const { data } = useFecth('http://localhost:5000/api/announcements')
+
     useEffect(() => {
         getList()
     })

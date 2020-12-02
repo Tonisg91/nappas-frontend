@@ -6,8 +6,6 @@ function Details({match}) {
     
     const { data } = useFecth('http://localhost:5000/api/announcements/' + match.params.id)
 
-    console.log(data);
-
     return (
         <div>
             <h1>Details view</h1>
