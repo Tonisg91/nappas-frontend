@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getList } from '../reducers/announcements.reducer'
-import useFecth from '../hooks/useFetch'
+import axios from '../configs/axios'
 
-function Home({data}) {
+function Home({data: { announcements }, getList}) {
+
+    const fetchList = () => axios.get('/announcements').then(({ data }) => getList(data))
 
     useEffect(() => {
-        getList()
-    })
+        fetchList()
+    }, [])
+
+
     return (
         <div>
             <h1>Home view</h1>
@@ -22,10 +26,9 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    getList: (data) => dispatch(getList(data))
+    getList: (data) => {
+        dispatch(getList(data))
+    }
 })
-
-
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

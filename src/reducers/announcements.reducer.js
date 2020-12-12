@@ -1,20 +1,19 @@
 const GET_LIST = 'GET_LIST'
 
-// Actions
-
+// ACTIONS
 export const getList = data => ({
     type: GET_LIST,
     payload: data
 })
 
-// Reducer
+
+// REDUCER
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state = [], action) => {
     switch (action.type) {
         case GET_LIST:
-            
-            break;
+                return action.payload
         default:
             return state
     }

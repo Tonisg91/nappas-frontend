@@ -1,14 +1,27 @@
 import { Switch, Route } from 'react-router-dom'
-import { Home, Profile, Details, Chat } from './views'
+import * as V from './views'
 
 function App() {
 
+  if ('geolocation' in navigator) {
+    console.log('Available');
+    navigator.geolocation.getCurrentPosition(async ({coords}) => {
+      const { latitude, longitude } = coords
+      
+    })
+  } else {
+    console.log('Not Available');
+  }
+
+
   return (
       <Switch>
-        <Route exact path="/" component={Home} />
-        <Route path="/item/:id" component={Details} />
-        <Route exact path="/profile" component={Profile} />
-        <Route exact path="/chat/:id" component={Chat} />
+        <Route exact path="/" component={V.Home} />
+        <Route exact path="/search" component={V.Listing} />
+        <Route exact path="/:category" component={V.Listing} />
+        <Route path="/item/:id" component={V.Details} />
+        <Route exact path="/profile" component={V.Profile} />
+        <Route exact path="/chat/:roomId" component={V.Chat} />
       </Switch>
   );
 }

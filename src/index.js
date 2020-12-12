@@ -6,6 +6,9 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import {default as store} from './store'
+import './configs/axios'
+
+
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,10 +1,10 @@
 import React from 'react'
 import useFecth from '../hooks/useFetch'
-import useFetch from '../hooks/useFetch'
 
 function Details({match}) {
     
     const { data } = useFecth('http://localhost:5000/api/announcements/' + match.params.id)
+    console.log(data);
 
     return (
         <div>
