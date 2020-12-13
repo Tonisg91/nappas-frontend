@@ -1,31 +1,47 @@
-import React from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
+import { Link, useParams } from 'react-router-dom'
+import useGeoLocation from '../hooks/useGeoLocation'
+import { getCoordinates } from '../reducers/coordinates.reducer'
 
-function Listing() {
+function Listing({data, coordinates, getCoordinates}) {
     const { category } = useParams()
-    const { search } = useLocation()
-    const queryParams = new URLSearchParams(search)
-    
+    const userCoords = useGeoLocation()
 
-    if ('geolocation' in navigator) {
-        console.log('Available');
+    useEffect(() => {
+        if (!coordinates) getCoordinates(userCoords)
+    }, [userCoords])
 
-        const coordinates = navigator.geolocation.getCurrentPosition(({ coords }) => {
-            console.log(coords);
-        })
-    } else {
-        console.log('Not Available');
-    }
+    // const hasData = data.length > 0
 
+    // useEffect(() => {
+    //     if (!hasData) {
+    //         axios.get('/announcements').then(res => {
+    //             if (res.status < 400) getList(res.data)
+    //         }).catch(err => console.log(err))
+    //     }
+    // }, [hasData])
 
-    console.log(category);
-    
-    //console.log(useLocation());
     return (
         <div>
-            <h1>Listing {} items</h1>
+            <Link to="/">Home</Link>
+            <h1>Listing {category} items</h1>
+
         </div>
     )
 }
 
-export default Listing
+const mapStateToProps = state => {
+    return {
+        data: state.announcements,
+        coordinates: state.coordinates
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    getCoordinates: (coords) => {
+        dispatch(getCoordinates(coords))
+    },
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Listing)

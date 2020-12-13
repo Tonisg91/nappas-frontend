@@ -1,5 +1,6 @@
 const GET_LIST = 'GET_LIST'
 
+
 // ACTIONS
 export const getList = data => ({
     type: GET_LIST,
@@ -13,7 +14,7 @@ export const getList = data => ({
 export default (state = [], action) => {
     switch (action.type) {
         case GET_LIST:
-                return action.payload
+            return action.payload
         default:
             return state
     }
