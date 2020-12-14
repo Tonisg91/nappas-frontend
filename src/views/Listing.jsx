@@ -10,17 +10,7 @@ function Listing({data, coordinates, getCoordinates}) {
 
     useEffect(() => {
         if (!coordinates) getCoordinates(userCoords)
-    }, [userCoords])
-
-    // const hasData = data.length > 0
-
-    // useEffect(() => {
-    //     if (!hasData) {
-    //         axios.get('/announcements').then(res => {
-    //             if (res.status < 400) getList(res.data)
-    //         }).catch(err => console.log(err))
-    //     }
-    // }, [hasData])
+    }, [userCoords, coordinates, getCoordinates])
 
     return (
         <div>

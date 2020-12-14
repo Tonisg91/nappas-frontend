@@ -1,26 +1,29 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const useGeoLocation = () => {
-    const [coords, setCoords] = useState(null)
     const { search } = useLocation()
-    const query = new URLSearchParams(search)
+    const [coords, setCoords] = useState(search)
+    const query = useMemo(() => new URLSearchParams(search), [search])
 
-    const replaceQueryStringParams = (lat,lng) => {
+    const replaceQueryStringParams = useCallback((lat, lng) => {
         query.append('latitude', lat)
         query.append('longitude', lng)
-        window.history.replaceState({}, '', `${window.location.pathname}?${query}`)
-    }
+        window.history.replaceState({}, '', `${window.location.pathname}?${query}`) 
+    }, [query])
+    
 
     useEffect(() => {
+        if (search) return
+        console.log('getting coords');
         if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+            navigator.geolocation.getCurrentPosition(({ coords }) => {
                 const { latitude, longitude } = coords
-                await setCoords({latitude, longitude})
+                setCoords({latitude, longitude})
                 replaceQueryStringParams(latitude, longitude)
             })
         }
-    }, [])
+    }, [search, replaceQueryStringParams])
 
     return coords
 }

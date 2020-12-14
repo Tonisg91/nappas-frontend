@@ -6,14 +6,16 @@ import axios from '../configs/axios'
 
 function Home({ data , getList}) {
     const hasData = data.length > 0
-    
+
     useEffect(() => {
         if (!hasData) {
-            axios.get('/announcements').then(res => {
-                if (res.status < 400) getList(res.data)
-            }).catch(err => console.log(err))
+            (async function() {
+                const resp = await axios.get('/announcements')
+
+                resp.status < 400 ? getList(resp.data) : alert(resp.status)
+            })()
         }
-    }, [hasData])
+    }, [hasData, getList])
 
     return (
         <div>
