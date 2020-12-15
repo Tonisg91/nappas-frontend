@@ -3,26 +3,41 @@ import { connect } from 'react-redux'
 import { getList } from '../reducers/announcements.reducer'
 import { Link } from 'react-router-dom'
 import axios from '../configs/axios'
+import useFetchingHandler from '../hooks/useFetchingHandler'
 
 function Home({ data , getList}) {
     const hasData = data.length > 0
+    const handler = useFetchingHandler()
 
     useEffect(() => {
         if (!hasData) {
-            (async function() {
-                const resp = await axios.get('/announcements')
+            handler.setLoading(true)
+            axios.get('/announcements')
+                .then(({data}) => getList(data))
+                .catch(({response: { data }}) => handler.setError(data))
+                .finally(() => handler.setLoading(false))
+            
+            }
+    }, [hasData, getList, handler])
 
-                resp.status < 400 ? getList(resp.data) : alert(resp.status)
-            })()
-        }
-    }, [hasData, getList])
+    if (handler.loading) {
+        return (
+            <h1>Loading data</h1>
+        )
+    }
+
+    if (handler.error) {
+        return (
+            <h1>{handler.error}</h1>
+        )
+    }
 
     return (
         <div>
             <Link to="/search" >Todos los trabajos</Link>
             <Link to="/construction" >Construccion</Link>
             <Link to="/informatica" >Informatica</Link>
-            <h1>Home view</h1>
+            <h1>Home</h1>
         </div>
     )
 }
