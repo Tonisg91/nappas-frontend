@@ -16,7 +16,6 @@ function Listing({data, coordinates, getCoordinates}) {
         <div>
             <Link to="/">Home</Link>
             <h1>Listing {category} items</h1>
-
         </div>
     )
 }

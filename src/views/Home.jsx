@@ -35,8 +35,8 @@ function Home({ data , getList}) {
     return (
         <div>
             <Link to="/search" >Todos los trabajos</Link>
-            <Link to="/construction" >Construccion</Link>
-            <Link to="/informatica" >Informatica</Link>
+            <Link to="/search/construction" >Construccion</Link>
+            <Link to="/search/informatica" >Informatica</Link>
             <h1>Home</h1>
         </div>
     )

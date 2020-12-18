@@ -1,6 +1,6 @@
 import axios from 'axios'
+import tokenService from '../utils/tokenService'
 
 axios.defaults.baseURL = "http://localhost:5000/api"
-axios.defaults.headers.common['Authorization'] = localStorage.nappasUserConfig ? localStorage.nappasUserConfig.auth_token : null
-
+axios.defaults.headers.common['Authorization'] = tokenService.getTokenForAxiosHeader()
 export default axios
