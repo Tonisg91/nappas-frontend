@@ -1,7 +1,46 @@
+import React, { useCallback, useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import * as V from './views'
+import { connect } from 'react-redux'
+import { getList } from './reducers/announcements.reducer'
+import axios from './configs/axios'
+import useFetchingHandler from './hooks/useFetchingHandler'
 
-function App() {
+function App({ data, getList }) {
+  const handler = useFetchingHandler()
+  const hasData = data.length
+
+  const setInitialData = useCallback(async() => {
+    try {
+      if (!hasData){
+        handler.setLoading(true)
+        if (handler.hasError) return handler.setLoading(false)
+
+        const { data } = await axios.get('/announcements')
+        getList(data)
+      }
+    } catch (error) {
+      handler.setHasError( error.response ? error.response.data : 'Server Error')
+    } finally {
+      handler.setLoading(false)
+    }
+  }, [getList, handler, hasData])
+
+  useEffect(() => {
+    setInitialData()
+  }, [getList, handler, setInitialData])
+
+  if (handler.loading) {
+    return (
+      <h1>Loading data</h1>
+    )
+  }
+
+  if (handler.hasError) {
+    return (
+      <h1>{handler.hasError}</h1>
+    )
+  }
 
   return (
       <Switch>
@@ -17,4 +56,16 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    data: state.announcements,
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  getList: (data) => {
+    dispatch(getList(data))
+  }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

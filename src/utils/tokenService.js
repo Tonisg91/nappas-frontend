@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-
 class TokenService {
     constructor() {
         this.localStoragePath = '@nappas_userToken'
@@ -16,6 +15,7 @@ class TokenService {
     }
 
     compareTokenTime() {
+        if (!this.getTokenFromLocalStorage()) return
         const { exp } = this.decodeToken(this.getTokenFromLocalStorage())
         const tokenExpireDate = new Date(Date.now() + exp)
         return tokenExpireDate > this.currentDate

@@ -15,7 +15,6 @@ const useGeoLocation = () => {
 
     useEffect(() => {
         if (search) return
-        console.log('getting coords');
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(({ coords }) => {
                 const { latitude, longitude } = coords

@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 const useFetchingHandler = () => {
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
+    const [hasError, setHasError] = useState(false)
 
-    return { loading, setLoading, error, setError}
+    return { loading, setLoading, hasError, setHasError}
 }
 
 export default useFetchingHandler

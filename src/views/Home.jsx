@@ -1,36 +1,7 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import { getList } from '../reducers/announcements.reducer'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import axios from '../configs/axios'
-import useFetchingHandler from '../hooks/useFetchingHandler'
 
-function Home({ data , getList}) {
-    const hasData = data.length > 0
-    const handler = useFetchingHandler()
-
-    useEffect(() => {
-        if (!hasData) {
-            handler.setLoading(true)
-            axios.get('/announcements')
-                .then(({data}) => getList(data))
-                .catch(({response: { data }}) => handler.setError(data))
-                .finally(() => handler.setLoading(false))
-            
-            }
-    }, [hasData, getList, handler])
-
-    if (handler.loading) {
-        return (
-            <h1>Loading data</h1>
-        )
-    }
-
-    if (handler.error) {
-        return (
-            <h1>{handler.error}</h1>
-        )
-    }
+function Home() {
 
     return (
         <div>
@@ -42,16 +13,4 @@ function Home({ data , getList}) {
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        data: state.announcements,
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-    getList: (data) => {
-        dispatch(getList(data))
-    }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default Home
