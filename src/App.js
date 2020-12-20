@@ -52,6 +52,7 @@ function App({ data, getList }) {
           <Route exact path="/chat/:roomId" component={V.Chat} />
           <Route exact path="/signup" component={V.Auth} />
           <Route exact path="/login" component={V.Auth} />
+          <Route exact path="/user/:userId" component={V.Users} />
       </Switch>
   );
 }
