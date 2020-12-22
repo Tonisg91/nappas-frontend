@@ -1,18 +1,19 @@
 import React from 'react'
-import useFecth from '../hooks/useFetch'
 import { useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-function Details({match}) {
+function Details({match, data}) {
     const history = useHistory()
-    const { data } = useFecth('http://localhost:5000/api/announcements/' + match.params.id)
+    const announcementFound = data.find(e => e._id === match.params.id)
 
-    console.log(data)
-
-    const { title, description = 'Vacío', photos, createdBy } = data
-
+    if (!data.length) return (
+        <h1>Loading</h1>
+    )
+    
+    const { title, description = 'Vacío', photos, createdBy } = announcementFound
+    
     //TODO: Crear un caroussel
     //TODO: Crear card para imagen de creador
-
 
     return (
         <div>
@@ -28,4 +29,10 @@ function Details({match}) {
     )
 }
 
-export default Details
+const mapStateToProps = state => {
+    return {
+        data: state.announcements,
+    }
+}
+
+export default connect(mapStateToProps)(Details)

@@ -1,12 +1,10 @@
 const GET_LIST = 'GET_LIST'
 
-
 // ACTIONS
 export const getList = data => ({
     type: GET_LIST,
     payload: data
 })
-
 
 // REDUCER
 

@@ -9,9 +9,6 @@ function Listing({data, coordinates, getCoordinates}) {
     const { category } = useParams()
     const userCoords = useGeoLocation()
 
-    console.log(data)
-
-
     useEffect(() => {
         if (!coordinates) getCoordinates(userCoords)
     }, [userCoords, coordinates, getCoordinates])
@@ -33,9 +30,6 @@ function Listing({data, coordinates, getCoordinates}) {
         </div>
     )
 }
-
-
-
 
 const mapStateToProps = state => {
     return {
