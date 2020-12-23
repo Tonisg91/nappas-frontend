@@ -1,8 +1,8 @@
 import React from 'react'
-import useFecth from '../hooks/useFetch'
+import { useFetch } from '../hooks'
 
 function Users({match}) {
-    const { data } = useFecth('/users/' + match.params.userId)
+    const { data } = useFetch('/users/' + match.params.userId)
 
     const { photo, name } = data
 

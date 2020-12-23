@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
-import useGeoLocation from '../hooks/useGeoLocation'
+import { useGeoLocation } from '../hooks'
 import { getCoordinates } from '../reducers/coordinates.reducer'
 import { AnnouncementCard } from '../components'
 
@@ -13,20 +13,30 @@ function Listing({data, coordinates, getCoordinates}) {
         if (!coordinates) getCoordinates(userCoords)
     }, [userCoords, coordinates, getCoordinates])
 
-    const displayAnnouncements = data.map((ad, idx) => (
-        <AnnouncementCard 
-            key={ad._id + idx}
-            id={ad._id}
-            title={ad.title}
-            photoCard={ad.photoCard}
-        />
-    ))
+    const filteredAnnouncementByCategory = data.filter(ad => ad.category === category)
+
+    const displayAnnouncements = (arrToDisplay) => {
+        return (
+            arrToDisplay.map((ad, idx) => (
+                    <AnnouncementCard
+                        key={ad._id + idx}
+                        id={ad._id}
+                        title={ad.title}
+                        photoCard={ad.photoCard}
+                    />
+                )
+            )
+        )
+    }
 
     return (
         <div style={{display: 'flex'}} >
             <Link to="/">Home</Link>
             <h1>Listing {category} items</h1>
-            {displayAnnouncements}
+            { category ?  
+                displayAnnouncements(filteredAnnouncementByCategory) :
+                displayAnnouncements(data)
+            }
         </div>
     )
 }
