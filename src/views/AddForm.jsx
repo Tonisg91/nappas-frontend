@@ -7,20 +7,26 @@ import { toast } from 'react-toastify'
 
 
 export const AddForm = ({ currentUser }) => {
-    const history = useHistory()
-
-    if (!currentUser) history.push('/login')
-
     const initialValues = {
         title: '',
         category: 'otros',
         description:'',
         budget: '',
         tags: '',
+        location: {
+            lat: null,
+            lng: null,
+            city: '',
+            state: '',
+        }
     }
+    const history = useHistory()
+
+    if (!currentUser) history.push('/login')
 
     const onSubmit = async (values, { resetForm }) => {
         try {
+            
             await axios.post('/announcements', { ...values })
             toast.success('Anuncio publicado con éxito', {autoClose: 2000})
         } catch (error) {
@@ -31,53 +37,93 @@ export const AddForm = ({ currentUser }) => {
         }
     }
 
+    const getLocation = (values, setValues) => {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(({ coords }) => {
+                const { latitude, longitude } = coords 
+                setValues({
+                    ...values,
+                    location: { 
+                        ...values.location,
+                        lat: Number(latitude),
+                        lng: longitude
+                    }
+                })
+            })
+        }
+    }
+
     return (
         <div>
-            <h1>add announcement</h1>
+            <h1>Crear Anuncio</h1>
             <Formik
                 initialValues={initialValues}
                 onSubmit={onSubmit}
             >
-                    <Form>
-                        <label htmlFor="title">Título</label>
-                        <Field
-                            id="title"
-                            name="title"
-                            placeholder="Qué trabajo ofreces?"
-                        />
-                        <label htmlFor="category">Categoría</label>
-                        <Field
-                            as="select"
-                            id="category"
-                            name="category"
-                        >
-                            <option value="construccion">Construcción</option>
-                            <option value="jardineria">Jardinería</option>
-                            <option value="informatica">Informática</option>
-                            <option value="Pintura">Pintura</option>
-                            <option value="otros">Otros</option>
-                        
-                        </Field>
-                        <label htmlFor="description">Descripción</label>
-                        <Field
-                            id="description"
-                            name="description"
-                            placeholder="Explica qué hay que hacer..."
-                        />
-                        <label htmlFor="budget">Presupuesto Aproximado</label>
-                        <Field
-                            type="number"
-                            id="budget"
-                            name="budget"
-                        />
-                        <label htmlFor="tags">Palabras Clave</label>
-                        <Field
-                            id="tags"
-                            name="tags"
-                            placeholder="Escribe palabras clave separas con coma"
-                        />
-                        <button type="submit">Crear trabajo</button>
-                    </Form>
+                {({values, setValues}) => (
+                        <Form>
+                            <div className="form-field">
+                                <label htmlFor="title">Título</label>
+                                <Field
+                                    id="title"
+                                    name="title"
+                                    placeholder="Qué trabajo ofreces?"
+                                />
+                            </div>
+                            <div className="form-field">
+                                <label htmlFor="category">Categoría</label>
+                                <Field
+                                    as="select"
+                                    id="category"
+                                    name="category"
+                                >
+                                    <option value="construccion">Construcción</option>
+                                    <option value="informatica">Informática</option>
+                                    <option value="jardineria">Jardinería</option>
+                                    <option value="mecanica">Mecánica</option>
+                                    <option value="pintura">Pintura</option>
+                                    <option value="otros">Otros</option>
+                                </Field>
+                            </div>
+                            <div className="form-field">
+                                <label htmlFor="description">Descripción</label>
+                                <Field
+                                    component="textarea"
+                                    cols="20"
+                                    rows="10"
+                                    id="description"
+                                    name="description"
+                                    placeholder="Explica qué hay que hacer..."
+                                />
+                            </div>
+                            <div className="form-field">
+                                <label htmlFor="budget">Presupuesto Aproximado</label>
+                                <Field
+                                    type="number"
+                                    id="budget"
+                                    name="budget"
+                                />
+                            </div>
+                            <div className="form-field">
+                                <label htmlFor="tags">Palabras Clave</label>
+                                <Field
+                                    id="tags"
+                                    name="tags"
+                                    placeholder="Escribe palabras clave separas con coma"
+                                />
+                            </div>
+                            <button
+                                //TODO: MOSTRAR MAPA
+                                type="button"
+                                id='geolocation-btn'
+                                onClick={() => getLocation(values, setValues)}
+                            >
+                                Añadir Ubicación
+                        </button>
+                            <button type="submit">Crear trabajo</button>
+                        </Form>
+                    )
+                }
             </Formik>
         </div>
 

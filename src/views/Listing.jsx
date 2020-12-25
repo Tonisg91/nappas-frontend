@@ -30,6 +30,7 @@ function Listing({data, coordinates, getCoordinates}) {
     }
 
     return (
+        //TODO: ARREGLAR ESTILOS
         <div style={{display: 'flex'}} >
             <Link to="/">Home</Link>
             <h1>Listing {category} items</h1>

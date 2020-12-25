@@ -14,6 +14,7 @@ function Details({match, data}) {
     
     //TODO: Crear un caroussel
     //TODO: Crear card para imagen de creador
+    //TODO: MOSTRAR MAPA
 
     return (
         <div>
