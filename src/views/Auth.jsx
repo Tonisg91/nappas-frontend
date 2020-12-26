@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { AuthForm } from '../components'
 import { Link } from 'react-router-dom'
 
@@ -25,13 +24,4 @@ export const Auth = ({ match }) => {
     )
 }
 
-
-const mapStateToProps = (state) => ({
-    
-})
-
-const mapDispatchToProps = {
-    
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Auth)
+export default Auth

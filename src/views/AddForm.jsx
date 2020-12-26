@@ -39,14 +39,25 @@ export const AddForm = ({ currentUser }) => {
 
     const getLocation = (values, setValues) => {
         if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(({ coords }) => {
-                const { latitude, longitude } = coords 
+            navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+                const { latitude, longitude } = coords
+                const { data } = await axios({
+                    method: 'get',
+                    url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GEOLOCATION_KEY}`,
+                    headers: null
+                })
+
+                const city = data.results[0].address_components[2].long_name
+                const state = data.results[0].address_components[3].long_name
+
                 setValues({
                     ...values,
                     location: { 
                         ...values.location,
-                        lat: Number(latitude),
-                        lng: longitude
+                        lat: latitude,
+                        lng: longitude,
+                        city,
+                        state
                     }
                 })
             })

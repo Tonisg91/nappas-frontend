@@ -10,7 +10,7 @@ function Details({match, data}) {
         <h1>Loading</h1>
     )
     
-    const { title, description = 'Vacío', photos, createdBy } = announcementFound
+    const { title, description , photos, createdBy } = announcementFound
     
     //TODO: Crear un caroussel
     //TODO: Crear card para imagen de creador

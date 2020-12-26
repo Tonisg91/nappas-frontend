@@ -1,14 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
 
 
-export default function AnnouncementCard({title, id, photoCard}) {
+export default function AnnouncementCard({data}) {
+    const { _id, title, photoCard } = data
     const history = useHistory()
 
     return (
         <AdCard 
-            onClick={() =>  history.push(`/item/${id}`)}
+            onClick={() =>  history.push(`/item/${_id}`)}
         >
             <PhotoCard src={photoCard} alt={title}/>
             <TitleBox>
@@ -16,6 +18,10 @@ export default function AnnouncementCard({title, id, photoCard}) {
             </TitleBox>
         </AdCard>
     )
+}
+
+AnnouncementCard.propTypes = {
+    data: PropTypes.object.isRequired,
 }
 
 const AdCard = styled.div`

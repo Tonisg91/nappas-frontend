@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Formik, Form, Field } from 'formik'
 import axios from '../configs/axios'
 import tokenService from '../utils/tokenService'
@@ -25,7 +26,7 @@ export default function AuthForm ({ APIpath }) {
     return (
         <Formik
             initialValues={initialValues}
-            onSubmit={onSubmit}
+            onSubmit={() => onSubmit()}
         >
             <Form
             >
@@ -37,4 +38,8 @@ export default function AuthForm ({ APIpath }) {
             </Form>
         </Formik>
     )
+}
+
+AuthForm.propTypes = {
+    APIpath: PropTypes.string.isRequired
 }
