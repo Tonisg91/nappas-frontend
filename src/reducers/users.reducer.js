@@ -11,7 +11,7 @@ export const getUserData = data => ({
 //REDUCER
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (state = {}, action) => {
+export default (state = null, action) => {
     switch (action.type) {
         case GET_USERDATA:
             return action.payload

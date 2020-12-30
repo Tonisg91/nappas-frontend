@@ -5,17 +5,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import {default as store} from './store'
+import { default as store } from './store'
 import './configs/axios'
+import { HandlerContextProvider } from './context/HandlerContext'
 
 
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router>
-        <App />
-      </Router>
+      <HandlerContextProvider>
+        <Router>
+          <App />
+        </Router>
+      </HandlerContextProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
