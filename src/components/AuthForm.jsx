@@ -25,7 +25,7 @@ export default function AuthForm ({ APIpath }) {
     return (
         <Formik
             initialValues={initialValues}
-            onSubmit={onSubmit}
+            onSubmit={() => onSubmit()}
         >
             <Form
             >
