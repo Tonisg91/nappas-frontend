@@ -1,55 +1,57 @@
-import React, { useContext } from 'react'
+import React, { useEffect } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import * as V from './views'
 import { connect } from 'react-redux'
 import { getList } from './reducers/announcements.reducer'
 import { getUserData } from './reducers/users.reducer'
+import useFetchingHandler from './hooks/useFetchingHandler'
+import setInitialData from './hooks/setInitialData'
 import { Navbar } from './components'
 import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { UserContextProvider } from './context/UserContext'
-import { AnnouncementsContextProvider } from './context/AnnouncementsContext'
-import handlerContext from './context/HandlerContext'
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App({ data, getList, getUserData, currentUser }) {
-  const handler = useContext(handlerContext)
-  console.log(handler)
+    const handler = useFetchingHandler()
+    const hasData = data.length
 
-  // if (handler.loading) {
-  //   return (
-  //     <h1>Loading data</h1>
-  //   )
-  // }
+    useEffect(() => {
+      setInitialData(handler, hasData, {getList, getUserData})
+    }, [getList, getUserData ,handler, hasData])
 
-  // if (handler.error) {
-  //   return (
-  //     <h1>{handler.error}</h1>
-  //   )
-  // }
+    if (handler.loading) {
+      return (
+        <h1>Loading data</h1>
+        )
+      }
+      
 
+    if (handler.hasError) {
+      return (
+        <h1>{handler.hasError}</h1>
+        )
+      }
 
-  return (
-    <UserContextProvider >
-      <Navbar />
-      <Switch>
-        <AnnouncementsContextProvider >
-          <Route exact path="/" component={V.Home} />
-          <Route exact path="/search" component={V.Listing} />
-          <Route path="/search/:category" component={V.Listing} />
-          <Route exact path="/item/:id" component={V.Details} />
-          <Route path="/chat/:roomId" component={V.Chat} />
-        </AnnouncementsContextProvider>
-        <Route path="/profile" component={V.Profile} />
-        <Route path="/user/:userId" component={V.Users} />
-        <Route path={["/signup", "/login"]}>
-          {(props) => currentUser ? <Redirect to="/profile" /> : <V.Auth {...props} />}
-        </Route>
-        <Route path="/new-announcement" component={V.AddForm} />
-      </Switch>
-      <ToastContainer />
-    </UserContextProvider>
-  )
+      
+    return (
+        <>
+          <Navbar />
+          <Switch>
+            <Route exact path="/" component={V.Home} />
+            <Route exact path="/search" component={V.Listing} />
+            <Route path="/search/:category" component={V.Listing} />
+            <Route exact path="/item/:id" component={V.Details} />
+            <Route path="/profile" component={V.Profile} />
+            <Route path="/chat/:roomId" component={V.Chat} />
+            <Route path={[ "/signup", "/login"]}>
+              { currentUser ? <Redirect to="/profile"/> : <V.Auth />}
+            </Route>
+            <Route path="/user/:userId" component={V.Users} />
+            <Route path="/new-announcement" component={V.AddForm} />
+          </Switch>
+          <ToastContainer />
+        </>
+    )
 }
 
 const mapStateToProps = state => {

@@ -6,32 +6,32 @@ import handlerContext from '../context/HandlerContext'
 const Context = createContext({})
 
 export function AnnouncementsContextProvider({ children }) {
-    const [announcements, setAnnouncements] = useState(null)
+    const [data, setData] = useState([])
     const handler = useContext(handlerContext)
 
-    const getAnnouncementsData = useCallback(async () => {
+    const getData = useCallback(async () => {
         try {
-            if (!announcements) {
+            if (!data.length) {
                 handler.setLoading(true)
                 if (handler.error) return handler.setLoading(false)
-
-                const announcements = await axios.get(`/announcements`)
-                setAnnouncements(announcements.data)
+                
+                const response = await axios.get(`/announcements`)
+                setData(response.data)
             }
         } catch (error) {
             handler.setError(error.response ? error.response.data : 'Server Error')
         } finally {
             handler.setLoading(false)
         }
-    }, [announcements, handler])
+    }, [data, handler])
 
     useEffect(() => {
-        getAnnouncementsData()
-    }, [getAnnouncementsData])
+        getData()
+    }, [getData])
 
 
 
-    return <Context.Provider value={{announcements, setAnnouncements}}>
+    return <Context.Provider value={{data, setData}}>
         {children}
     </Context.Provider>
 }

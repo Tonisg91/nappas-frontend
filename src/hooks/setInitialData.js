@@ -5,7 +5,7 @@ export default async function setInitialData (handler, hasData, cb) {
     try {
         if (!hasData) {
             handler.setLoading(true)
-            if (handler.error) return handler.setLoading(false)
+            if (handler.hasError) return handler.setLoading(false)
 
             const announcements = await axios.get('/announcements')
             cb.getList(announcements.data)
@@ -16,7 +16,7 @@ export default async function setInitialData (handler, hasData, cb) {
 
         }
     } catch (error) {
-        handler.setError(error.response ? error.response.data : 'Server Error')
+        handler.setHasError(error.response ? error.response.data : 'Server Error')
     } finally {
         handler.setLoading(false)
     }

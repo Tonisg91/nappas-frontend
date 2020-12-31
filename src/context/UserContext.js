@@ -30,7 +30,7 @@ export function UserContextProvider ({children}) {
         getUserData()
     }, [getUserData])
     
-    return <Context.Provider value={{...currentUser, setCurrentUser}}>
+    return <Context.Provider value={{ currentUser, setCurrentUser }}>
         {children}
     </Context.Provider>
 }
