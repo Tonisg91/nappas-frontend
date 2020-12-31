@@ -10,7 +10,7 @@ export const AddForm = ({ currentUser }) => {
     const initialValues = {
         title: '',
         category: 'otros',
-        description:'',
+        description: '',
         budget: '',
         tags: '',
         location: {
@@ -26,9 +26,9 @@ export const AddForm = ({ currentUser }) => {
 
     const onSubmit = async (values, { resetForm }) => {
         try {
-            
+
             await axios.post('/announcements', { ...values })
-            toast.success('Anuncio publicado con éxito', {autoClose: 2000})
+            toast.success('Anuncio publicado con éxito', { autoClose: 2000 })
         } catch (error) {
             //TODO: HANDLER ERROR
             console.log(error.response ? error.response.data : 'Server Error')
@@ -37,16 +37,28 @@ export const AddForm = ({ currentUser }) => {
         }
     }
 
+
     const getLocation = (values, setValues) => {
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(({ coords }) => {
-                const { latitude, longitude } = coords 
+        if ('geolocation' in navigator){
+            navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+                const { latitude, longitude } = coords
+                const { data } = await axios({
+                    method: 'get',
+                    url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GEOLOCATION_KEY}`,
+                    headers: null
+                })
+
+                const city = data.results[0].address_components[2].long_name
+                const state = data.results[0].address_components[3].long_name
+
                 setValues({
                     ...values,
-                    location: { 
+                    location: {
                         ...values.location,
-                        lat: Number(latitude),
-                        lng: longitude
+                        lat: latitude,
+                        lng: longitude,
+                        city,
+                        state
                     }
                 })
             })
@@ -60,69 +72,69 @@ export const AddForm = ({ currentUser }) => {
                 initialValues={initialValues}
                 onSubmit={onSubmit}
             >
-                {({values, setValues}) => (
-                        <Form>
-                            <div className="form-field">
-                                <label htmlFor="title">Título</label>
-                                <Field
-                                    id="title"
-                                    name="title"
-                                    placeholder="Qué trabajo ofreces?"
-                                />
-                            </div>
-                            <div className="form-field">
-                                <label htmlFor="category">Categoría</label>
-                                <Field
-                                    as="select"
-                                    id="category"
-                                    name="category"
-                                >
-                                    <option value="construccion">Construcción</option>
-                                    <option value="informatica">Informática</option>
-                                    <option value="jardineria">Jardinería</option>
-                                    <option value="mecanica">Mecánica</option>
-                                    <option value="pintura">Pintura</option>
-                                    <option value="otros">Otros</option>
-                                </Field>
-                            </div>
-                            <div className="form-field">
-                                <label htmlFor="description">Descripción</label>
-                                <Field
-                                    component="textarea"
-                                    cols="20"
-                                    rows="10"
-                                    id="description"
-                                    name="description"
-                                    placeholder="Explica qué hay que hacer..."
-                                />
-                            </div>
-                            <div className="form-field">
-                                <label htmlFor="budget">Presupuesto Aproximado</label>
-                                <Field
-                                    type="number"
-                                    id="budget"
-                                    name="budget"
-                                />
-                            </div>
-                            <div className="form-field">
-                                <label htmlFor="tags">Palabras Clave</label>
-                                <Field
-                                    id="tags"
-                                    name="tags"
-                                    placeholder="Escribe palabras clave separas con coma"
-                                />
-                            </div>
-                            <button
-                                //TODO: MOSTRAR MAPA
-                                type="button"
-                                id='geolocation-btn'
-                                onClick={() => getLocation(values, setValues)}
+                {({ values, setValues }) => (
+                    <Form>
+                        <div className="form-field">
+                            <label htmlFor="title">Título</label>
+                            <Field
+                                id="title"
+                                name="title"
+                                placeholder="Qué trabajo ofreces?"
+                            />
+                        </div>
+                        <div className="form-field">
+                            <label htmlFor="category">Categoría</label>
+                            <Field
+                                as="select"
+                                id="category"
+                                name="category"
                             >
-                                Añadir Ubicación
+                                <option value="construccion">Construcción</option>
+                                <option value="informatica">Informática</option>
+                                <option value="jardineria">Jardinería</option>
+                                <option value="mecanica">Mecánica</option>
+                                <option value="pintura">Pintura</option>
+                                <option value="otros">Otros</option>
+                            </Field>
+                        </div>
+                        <div className="form-field">
+                            <label htmlFor="description">Descripción</label>
+                            <Field
+                                component="textarea"
+                                cols="20"
+                                rows="10"
+                                id="description"
+                                name="description"
+                                placeholder="Explica qué hay que hacer..."
+                            />
+                        </div>
+                        <div className="form-field">
+                            <label htmlFor="budget">Presupuesto Aproximado</label>
+                            <Field
+                                type="number"
+                                id="budget"
+                                name="budget"
+                            />
+                        </div>
+                        <div className="form-field">
+                            <label htmlFor="tags">Palabras Clave</label>
+                            <Field
+                                id="tags"
+                                name="tags"
+                                placeholder="Escribe palabras clave separas con coma"
+                            />
+                        </div>
+                        <button
+                            //TODO: MOSTRAR MAPA
+                            type="button"
+                            id='geolocation-btn'
+                            onClick={() => getLocation(values, setValues)}
+                        >
+                            Añadir Ubicación
                         </button>
-                            <button type="submit">Crear trabajo</button>
-                        </Form>
-                    )
+                        <button type="submit">Crear trabajo</button>
+                    </Form>
+                )
                 }
             </Formik>
         </div>
@@ -135,7 +147,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddForm)

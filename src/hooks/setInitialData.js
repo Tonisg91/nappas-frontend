@@ -11,9 +11,8 @@ export default async function setInitialData (handler, hasData, cb) {
             cb.getList(announcements.data)
 
             if (!tokenService.compareTokenTime()) return
-            const user = await axios.get(`/users/${tokenService.getUserId()}`)
+            const user = await axios.get(`/users/profile`)
             cb.getUserData(user.data)
-
         }
     } catch (error) {
         handler.setHasError(error.response ? error.response.data : 'Server Error')

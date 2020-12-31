@@ -11,8 +11,9 @@ class TokenService {
         return this.decodeToken()._id
     }
 
-    removeToken() {
+    removeToken(cb) {
         localStorage.removeItem(this.localStoragePath)
+        if (cb) cb()
     }
 
     toLocalStorage(token) {

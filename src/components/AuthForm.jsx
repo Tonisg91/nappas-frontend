@@ -3,7 +3,7 @@ import { Formik, Form, Field } from 'formik'
 import axios from '../configs/axios'
 import tokenService from '../utils/tokenService'
 
-export default function AuthForm ({ APIpath }) {
+export default function AuthForm ({ APIpath, cb = null }) {
     const buttonText = APIpath.toUpperCase()
     const initialValues = {
         email: '',
@@ -11,11 +11,20 @@ export default function AuthForm ({ APIpath }) {
     }
     const onSubmit = async (values, { resetForm }) => {
         try {
+            //TODO: FIX ISSUE WHEN USER LOGIN
             const { data } = await axios.post('/' + APIpath, { ...values })
             if (data.token) tokenService.toLocalStorage(data.token)
-        } catch ({ response }) {
+            const userLogged = await axios({
+                method: 'get',
+                url: `/users/profile`,
+                headers: {
+                    'Authorization': data.token
+                }
+            })
+            if (cb) cb(userLogged.data)
+        } catch (error) {
             //TODO: HANDLER ERROR
-            console.log(response.data)
+            console.log(error)
         } finally {
             resetForm()
         }
@@ -25,7 +34,7 @@ export default function AuthForm ({ APIpath }) {
     return (
         <Formik
             initialValues={initialValues}
-            onSubmit={() => onSubmit()}
+            onSubmit={onSubmit}
         >
             <Form
             >

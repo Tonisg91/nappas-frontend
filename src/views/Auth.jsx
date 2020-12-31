@@ -2,8 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { AuthForm } from '../components'
 import { Link } from 'react-router-dom'
+import { getUserData } from '../reducers/users.reducer'
 
-export const Auth = ({ match }) => {
+export const Auth = ({ match, getUserData }) => {
     const isSignupRoute = match.path.slice(1) === 'signup'
 
     if (isSignupRoute) {
@@ -19,19 +20,17 @@ export const Auth = ({ match }) => {
     return (
         <div>
             <h1>Login</h1>
-            <AuthForm APIpath="login"/>
+            <AuthForm APIpath="login" cb={getUserData}/>
             <Link to="/signup" >Aún no te has registrado? Crea una cuenta!</Link>
         </div>
     )
 }
 
 
-const mapStateToProps = (state) => ({
-    
+const mapDispatchToProps = (dispatch) => ({
+    getUserData: (userData) => {
+        dispatch(getUserData(userData))
+    }
 })
 
-const mapDispatchToProps = {
-    
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Auth)
+export default connect(null, mapDispatchToProps)(Auth)

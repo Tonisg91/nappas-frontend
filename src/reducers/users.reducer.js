@@ -1,20 +1,25 @@
 const GET_USERDATA = 'GET_USERDATA'
-
+const LOGOUT = 'LOGOUT'
 // ACTIONS
 
 export const getUserData = data => ({
     type: GET_USERDATA,
     payload: data
 })
-//export const getUserData = data => (console.log(data))
+export const logout = () => ({
+    type: LOGOUT
+})
 
 //REDUCER
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (state = {}, action) => {
+export default (state = null, action) => {
     switch (action.type) {
         case GET_USERDATA:
+            console.log(action.payload)
             return action.payload
+        case LOGOUT:
+            return null
         default:
             return state
     }
