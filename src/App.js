@@ -7,19 +7,19 @@ import { getUserData } from './reducers/users.reducer'
 import useFetchingHandler from './hooks/useFetchingHandler'
 import setInitialData from './hooks/setInitialData'
 import { Navbar } from './components'
+import ReactGa from 'react-ga'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 
-
-
 function App({ data, getList, getUserData, currentUser }) {
+    
     const handler = useFetchingHandler()
     const hasData = data.length
-
     useEffect(() => {
       setInitialData(handler, hasData, {getList, getUserData})
+      ReactGa.initialize(process.env.REACT_APP_ANALYTICS_KEY)
     }, [getList, getUserData ,handler, hasData])
 
     if (handler.loading) {

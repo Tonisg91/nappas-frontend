@@ -16,7 +16,6 @@ export const logout = () => ({
 export default (state = null, action) => {
     switch (action.type) {
         case GET_USERDATA:
-            console.log(action.payload)
             return action.payload
         case LOGOUT:
             return null

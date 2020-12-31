@@ -4,12 +4,14 @@ import { Link, useParams } from 'react-router-dom'
 import { useGeoLocation } from '../hooks'
 import { getCoordinates } from '../reducers/coordinates.reducer'
 import { AnnouncementCard } from '../components'
+import ReactGa from 'react-ga'
 
 function Listing({data, coordinates, getCoordinates}) {
     const { category } = useParams()
     const userCoords = useGeoLocation()
-
+    
     useEffect(() => {
+        ReactGa.pageview('/listing')
         if (!coordinates) getCoordinates(userCoords)
     }, [userCoords, coordinates, getCoordinates])
 
