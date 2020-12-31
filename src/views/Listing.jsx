@@ -20,7 +20,9 @@ function Listing({data, coordinates, getCoordinates}) {
             arrToDisplay.map((ad, idx) => (
                     <AnnouncementCard
                         key={ad._id + idx}
-                        data={ad}
+                        id={ad._id}
+                        title={ad.title}
+                        photoCard={ad.photoCard}
                     />
                 )
             )
