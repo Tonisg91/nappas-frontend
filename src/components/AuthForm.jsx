@@ -2,6 +2,7 @@ import React from 'react'
 import { Formik, Form, Field } from 'formik'
 import axios from '../configs/axios'
 import tokenService from '../utils/tokenService'
+import { GaEvent } from 'utils/analytics'
 
 export default function AuthForm ({ APIpath, cb = null }) {
     const buttonText = APIpath.toUpperCase()
@@ -26,6 +27,7 @@ export default function AuthForm ({ APIpath, cb = null }) {
             //TODO: HANDLER ERROR
             console.log(error)
         } finally {
+            GaEvent(APIpath, 'User')
             resetForm()
         }
     }

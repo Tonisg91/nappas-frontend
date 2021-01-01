@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import tokenService from '../utils/tokenService'
 import { logout } from '../reducers/users.reducer'
+import { GaEvent } from 'utils/analytics'
 
 
 export const Profile = ({ currentUser, logout }) => {
@@ -11,9 +12,11 @@ export const Profile = ({ currentUser, logout }) => {
 
     const handleLogout = () => {
         tokenService.removeToken(logout)
+        GaEvent('Logout', 'User')
         history.push('/')
     }
 
+    const { announcements, email, photo, reviews, workInProgress } = currentUser
 
     return (
         <div>
