@@ -34,6 +34,7 @@ export const AddForm = ({ currentUser }) => {
             console.log(error.response ? error.response.data : 'Server Error')
         } finally {
             resetForm()
+            history.go(0)
         }
     }
 

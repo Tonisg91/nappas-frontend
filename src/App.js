@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom'
 import * as V from './views'
+
 import { connect } from 'react-redux'
 import { getList } from './reducers/announcements.reducer'
 import { getUserData } from './reducers/users.reducer'
-import useFetchingHandler from './hooks/useFetchingHandler'
-import setInitialData from './hooks/setInitialData'
+
 import { Navbar } from './components'
+import { useFetchingHandler, setInitialData} from 'hooks'
+import { GaInit, GaPageView } from 'utils/analytics'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
-import { GaInit, GaPageView } from 'utils/analytics'
-import ReactGa from 'react-ga'
 
 
 function App({ data, getList, getUserData, currentUser }) {
@@ -22,7 +22,7 @@ function App({ data, getList, getUserData, currentUser }) {
       setInitialData(handler, hasData, {getList, getUserData})
     }, [getList, getUserData ,handler, hasData])
     
-    useEffect(() => {
+    useEffect(() => { //GOOGLE ANALYTICS INITIALIZATION & HISTORY LISTENER
       GaInit()
       return history.listen(GaPageView)
     }, [history])

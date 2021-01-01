@@ -3,6 +3,7 @@ import { Formik, Form, Field } from 'formik'
 import axios from '../configs/axios'
 import tokenService from '../utils/tokenService'
 import { GaEvent } from 'utils/analytics'
+import { toast } from 'react-toastify'
 
 export default function AuthForm ({ APIpath, cb = null }) {
     const buttonText = APIpath.toUpperCase()
@@ -15,17 +16,22 @@ export default function AuthForm ({ APIpath, cb = null }) {
             //TODO: FIX ISSUE WHEN USER LOGIN
             const { data } = await axios.post('/' + APIpath, { ...values })
             if (data.token) tokenService.toLocalStorage(data.token)
-            const userLogged = await axios({
-                method: 'get',
-                url: `/users/profile`,
-                headers: {
-                    'Authorization': data.token
-                }
-            })
-            if (cb) cb(userLogged.data)
+
+            if (APIpath === 'login' && cb) {
+                const userLogged = await axios({
+                    method: 'get',
+                    url: '/users/profile',
+                    headers: {
+                        'Authorization': data.token
+                    }
+                })
+                cb(userLogged.data)
+            }
         } catch (error) {
             //TODO: HANDLER ERROR
-            console.log(error)
+            toast.error(error.response ? error.response.data : 'Error at login', {
+                autoClose: 2000
+            })
         } finally {
             GaEvent(APIpath, 'User')
             resetForm()

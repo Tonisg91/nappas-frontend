@@ -2,7 +2,7 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-function Details({match, data}) {
+function Details({match, data, currentUser}) {
     const history = useHistory()
     const announcementFound = data.find(e => e._id === match.params.id)
 
@@ -11,6 +11,13 @@ function Details({match, data}) {
     )
     
     const { title, description = 'Vacío', photos, createdBy } = announcementFound
+
+    const goChat = () => {
+        history.push({
+            pathname: `/chat/${title}`,
+            search: `?guestUser=${currentUser._id}&createdBy=${createdBy._id}`
+        })
+    }
     
     //TODO: Crear un caroussel
     //TODO: Crear card para imagen de creador
@@ -26,6 +33,7 @@ function Details({match, data}) {
                 style={{cursor: 'pointer'}}
                 >        
             Creador</p>
+            <button onClick={goChat}  >Enviar mensaje</button>
         </div>
     )
 }
@@ -33,6 +41,7 @@ function Details({match, data}) {
 const mapStateToProps = state => {
     return {
         data: state.announcements,
+        currentUser: state.currentUser,
     }
 }
 

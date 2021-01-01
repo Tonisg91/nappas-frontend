@@ -1,7 +1,7 @@
 import ReactGa from 'react-ga'
 
-export const GaInit = () => ReactGa.initialize(process.env.REACT_APP_ANALYTICS_KEY, {
-    debug: process.env.NODE_ENV === 'development',
+export const GaInit = (debugBool) => ReactGa.initialize(process.env.REACT_APP_ANALYTICS_KEY, {
+    debug: debugBool,
 })
 
 export const GaPageView = ({pathname}) => ReactGa.pageview(pathname)

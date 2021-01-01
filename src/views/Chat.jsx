@@ -1,47 +1,60 @@
-import React, { useState } from "react";
-import { useChat } from "../hooks";
+import React, { useState, useEffect, useRef } from "react"
+import io from 'socket.io-client'
+
+const NEW_CHAT_MESSAGE_EVENT = "newChatMessage"
+const SOCKET_SERVER_URL = "http://localhost:5000"
 
 const ChatRoom = ({match}) => {
-    const { roomId } = match.params;
-    const { messages, sendMessage } = useChat(roomId);
-    const [newMessage, setNewMessage] = useState("");
+    const [yourId, setYourId] = useState(null)
+    const [messages, setMessages] = useState([])
+    const [newMessage, setNewMessage] = useState('')
+    const socketRef = useRef()
 
-    const handleNewMessageChange = (event) => {
-        setNewMessage(event.target.value);
-    };
+    useEffect(() => {
+        socketRef.current = io.connect(SOCKET_SERVER_URL)
 
-    const handleSendMessage = () => {
-        sendMessage(newMessage);
-        setNewMessage("");
-    };
+        socketRef.current.on('your id', (id) => {
+            setYourId(id)
+        })
 
-    return (
-        <div className="chat-room-container">
-            <h1 className="room-name">Room: {roomId}</h1>
-            <div className="messages-container">
-                <ol className="messages-list">
-                    {messages.map((message, i) => (
-                        <li
-                            key={i}
-                            className={`message-item ${message.ownedByCurrentUser ? "my-message" : "received-message"
-                                }`}
-                        >
-                            {message.body}
-                        </li>
-                    ))}
-                </ol>
-            </div>
-            <textarea
-                value={newMessage}
-                onChange={handleNewMessageChange}
-                placeholder="Write message..."
-                className="new-message-input-field"
-            />
-            <button onClick={handleSendMessage} className="send-message-button">
-                Send
-            </button>
-        </div>
-    );
+        socketRef.current.on('message', (message = newMessage) => {
+            receivedMessage(message)
+        })
+    }, [])
+
+    function receivedMessage(message) {
+        setMessages(oldMsgs => [...oldMsgs, message])
+    }
+
+    function sendMessage(e) {
+        e.preventDefault()
+        const messageObject = {
+            body: newMessage,
+            id: yourId
+        }
+        setNewMessage('')
+        socketRef.current.emit('send message', messageObject)
+    }
+
+    
+
+   return (
+       <>
+        <h1>CHAT</h1>
+        <input 
+            type="text" 
+            onChange={({target}) => setNewMessage(target.value)}
+        />
+        {   
+            messages.map((m,idx) => {
+                return (
+                    <h4 style={{color: m.id === yourId ? 'blue' : 'red'}}>{m.body}</h4>
+                )
+            })
+        }
+        <button onClick={sendMessage}>SEND MESSAGE</button>
+       </>
+   )
 };
 
 export default ChatRoom;

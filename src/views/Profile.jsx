@@ -16,11 +16,19 @@ export const Profile = ({ currentUser, logout }) => {
         history.push('/')
     }
 
-    const { announcements, email, photo, reviews, workInProgress } = currentUser
+    const { name, announcements, email, photo } = currentUser
+
+    const displayAnnouncements = announcements.map(ad => (
+        <h1 key={ad.title}>{ad.title}</h1>
+    ))
 
     return (
         <div>
             <h1>PROFILE</h1>
+            <h3>{email}</h3>
+            <h3>{name}</h3>
+            { displayAnnouncements }
+            <img src={photo} alt=""/>
             <button onClick={handleLogout} >LOGOUT</button>
         </div>
     )
