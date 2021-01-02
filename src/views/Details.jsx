@@ -17,10 +17,11 @@ function Details({match, data, currentUser, getChat }) {
     const goChat = async () => {
         const body = {
             createdBy: createdBy._id,
-            guestUser: currentUser._id
+            guestUser: currentUser._id,
+            announcement: announcementFound._id
         }
         const { data } = await axios.post('/chat', body)
-        
+        console.log(data)
         getChat(data)
         history.push(`/chat/${data._id}`)
     }

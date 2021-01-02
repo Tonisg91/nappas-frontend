@@ -1,22 +1,26 @@
 import React, { useState, useEffect, useRef } from "react"
 import { connect } from 'react-redux'
 import io from 'socket.io-client'
+import { getChat, addMessage } from 'reducers/chats.reducers'
 
-//const NEW_CHAT_MESSAGE_EVENT = "newChatMessage"
 const SOCKET_SERVER_URL = "http://localhost:5000"
 
-const ChatRoom = ({ match, chat }) => {
-
-    console.log(chat)
-
-    //const [chatId, setChatId] = useState()
-    const [messages, setMessages] = useState([])
+const ChatRoom = ({ match, chat, getChat, currentUser, addMessage }) => {
+    const [chatId, setChatId] = useState(match.params.roomId)
+    const [currentMessages, setCurrentMessages] = useState([])
     const [newMessage, setNewMessage] = useState('')
     const socketRef = useRef()
-    
+
     useEffect(() => {
         socketRef.current = io.connect(SOCKET_SERVER_URL)
-        console.log(socketRef)
+        socketRef.current.emit('join', chatId)
+
+        if (!chat.messages) socketRef.current.emit('getChat', chatId)
+
+        socketRef.current.on('getChat', (m) => {
+            getChat(m)
+            setCurrentMessages([...m.messages])
+        })
 
         // socketRef.current.on('your id', (id) => {
         //     setYourId(id)
@@ -27,36 +31,37 @@ const ChatRoom = ({ match, chat }) => {
         //     setChatId(body)
         // })
 
-        socketRef.current.on('message', (message = newMessage) => {
+        socketRef.current.on('message', (message) => {
             receivedMessage(message)
         })
+
+        return () => {
+            getChat([])
+            socketRef.current.disconnect()
+        }
     }, [])
 
 
-    // function checkChat() {
-    //     const body = {
-    //         createdBy,
-    //         guestUser
-    //     }
-    //     socketRef.current.emit('checkChat', body)
-    // }
+    function checkChat() {
+        socketRef.current.emit('getChat', match.params.roomId)
+    }
 
     function receivedMessage(message) {
-        console.log(message)
-        setMessages(oldMsgs => [...oldMsgs, message])
+        addMessage(message)
     }
 
     function sendMessage(e) {
-        // e.preventDefault()
-        // const messageObject = {
-        //     body: {
-        //         newMessage,
-        //         guestUser
-        //         },
-        //     chatId: chatId
-        // }
-        // socketRef.current.emit('send message', messageObject)
-        // setNewMessage('')
+        e.preventDefault()
+        const messageObject = {
+            msg: {
+                data: newMessage,
+                user: currentUser._id
+                },
+            chatId: chatId
+        }
+        socketRef.current.emit('send message', messageObject)
+        addMessage({newMessage, user: currentUser._id})
+        setNewMessage('')
     }
 
     
@@ -65,13 +70,15 @@ const ChatRoom = ({ match, chat }) => {
        <>
         <h1>CHAT</h1>
         <input 
+            value={newMessage}
             type="text" 
             onChange={({target}) => setNewMessage(target.value)}
         />
         {   
-            messages.map((m) => {
+            currentMessages.map((m, idx) => {
+                
                 return (
-                    <h4 >{m.body.newMessage}</h4>
+                    <h4 key={m.newMessage + idx}>{m.newMessage}</h4>
                 )
             })
         }
@@ -87,4 +94,13 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(ChatRoom)
+const mapDispatchToProps = (dispatch) => ({
+    getChat: (chatData) => {
+        dispatch(getChat(chatData))
+    },
+    addMessage: (msg) => {
+        dispatch(addMessage(msg))
+    }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom)
