@@ -1,22 +1,28 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
+import axios from 'configs/axios'
+import { getChat } from 'reducers/chats.reducers'
 
-function Details({match, data, currentUser}) {
+function Details({match, data, currentUser, getChat }) {
     const history = useHistory()
     const announcementFound = data.find(e => e._id === match.params.id)
-
+    
     if (!data.length) return (
         <h1>Loading</h1>
     )
     
     const { title, description = 'Vacío', photos, createdBy } = announcementFound
 
-    const goChat = () => {
-        history.push({
-            pathname: `/chat/${title}`,
-            search: `?guestUser=${currentUser._id}&createdBy=${createdBy._id}`
-        })
+    const goChat = async () => {
+        const body = {
+            createdBy: createdBy._id,
+            guestUser: currentUser._id
+        }
+        const { data } = await axios.post('/chat', body)
+        
+        getChat(data)
+        history.push(`/chat/${data._id}`)
     }
     
     //TODO: Crear un caroussel
@@ -45,4 +51,10 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(Details)
+const mapDispatchToProps = (dispatch) => ({
+    getChat: (chatData) => {
+        dispatch(getChat(chatData))
+    }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Details)

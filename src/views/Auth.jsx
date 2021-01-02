@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { AuthForm } from '../components'
+import { AuthForm } from 'components'
 import { Link } from 'react-router-dom'
 import { getUserData } from '../reducers/users.reducer'
 
