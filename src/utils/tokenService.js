@@ -1,47 +1,47 @@
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken"
 class TokenService {
-    constructor() {
-        this.localStoragePath = '@nappas_userToken'
-        this.JWT_KEY = process.env.REACT_APP_JWT_KEY
-        this.currentDate = new Date(Date.now())
-        this.userToken = JSON.parse(localStorage.getItem(this.localStoragePath))
+  constructor() {
+    this.localStoragePath = "@nappas_userToken"
+    this.JWT_KEY = process.env.REACT_APP_JWT_KEY
+    this.currentDate = new Date(Date.now())
+    this.userToken = JSON.parse(localStorage.getItem(this.localStoragePath))
+  }
+
+  getUserId() {
+    return this.decodeToken()._id
+  }
+
+  removeToken(cb) {
+    localStorage.removeItem(this.localStoragePath)
+    if (cb) cb()
+  }
+
+  toLocalStorage(token) {
+    localStorage.setItem(this.localStoragePath, JSON.stringify(token))
+  }
+
+  compareTokenTime() {
+    if (!this.userToken) return false
+    const { exp } = this.decodeToken()
+    const tokenExpireDate = new Date(Date.now() + exp)
+
+    if (tokenExpireDate < this.currentDate) {
+      this.removeToken()
+      return false
     }
 
-    getUserId() {
-        return this.decodeToken()._id
-    }
+    return true
+  }
 
-    removeToken(cb) {
-        localStorage.removeItem(this.localStoragePath)
-        if (cb) cb()
-    }
+  getToken() {
+    if (!this.compareTokenTime()) return null
 
-    toLocalStorage(token) {
-        localStorage.setItem(this.localStoragePath, JSON.stringify(token))
-    }
+    return this.userToken
+  }
 
-    compareTokenTime() {
-        if (!this.userToken) return false
-        const { exp } = this.decodeToken()
-        const tokenExpireDate = new Date(Date.now() + exp)
-
-        if (tokenExpireDate < this.currentDate) {
-            this.removeToken()
-            return false
-        }
-
-        return true
-    }
-
-    getToken() {
-        if (!this.compareTokenTime()) return null
-
-        return this.userToken
-    }
-
-    decodeToken() {
-        return jwt.decode(this.userToken, this.JWT_KEY)
-    }
+  decodeToken() {
+    return jwt.decode(this.userToken, this.JWT_KEY)
+  }
 }
 
 export default new TokenService()
