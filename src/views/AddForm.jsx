@@ -28,7 +28,7 @@ export const AddForm = ({ currentUser }) => {
       await axios.post("/announcements", { ...values })
       toast.success("Anuncio publicado con éxito", { autoClose: 2000 })
     } catch (error) {
-      //TODO: HANDLER ERROR
+      // TODO: HANDLER ERROR
       console.log(error.response ? error.response.data : "Server Error")
     } finally {
       resetForm()
@@ -112,7 +112,7 @@ export const AddForm = ({ currentUser }) => {
               />
             </div>
             <button
-              //TODO: MOSTRAR MAPA
+              // TODO: MOSTRAR MAPA
               type="button"
               id="geolocation-btn"
               onClick={() => getLocation(values, setValues)}

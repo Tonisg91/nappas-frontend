@@ -15,7 +15,8 @@ module.exports = {
   rules: {
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
-    "spaced-comment": ["warn", "always"],
+    "spaced-comment": "off",
+    "no-unused-vars": "warn",
   },
   settings: {
     react: {
