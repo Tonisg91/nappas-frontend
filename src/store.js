@@ -1,18 +1,18 @@
-import { combineReducers, createStore } from "redux"
-import * as reducers from "reducers"
+import { combineReducers, createStore } from 'redux'
+import * as reducers from 'reducers'
 
 export default createStore(
-  combineReducers({
-    ...reducers,
-  }),
-  reduxDevtools()
+    combineReducers({
+        ...reducers
+    }),
+    reduxDevtools()
 )
 
 function reduxDevtools() {
-  if (process.env.REACT_APP_NODE_ENV === "dev") {
-    return (
-      window.__REDUX_DEVTOOLS_EXTENSION__ &&
-      window.__REDUX_DEVTOOLS_EXTENSION__()
-    )
-  }
+    if (process.env.REACT_APP_NODE_ENV === 'dev') {
+        return (
+            window.__REDUX_DEVTOOLS_EXTENSION__ &&
+            window.__REDUX_DEVTOOLS_EXTENSION__()
+        )
+    }
 }

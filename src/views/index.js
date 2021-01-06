@@ -1,8 +1,8 @@
-export { default as Home } from "./Home.jsx"
-export { default as Details } from "./Details.jsx"
-export { default as Profile } from "./Profile.jsx"
-export { default as Chat } from "./Chat.jsx"
-export { default as Listing } from "./Listing"
-export { default as Auth } from "./Auth"
-export { default as Users } from "./Users"
-export { default as AddForm } from "./AddForm.jsx"
+export { default as Home } from './Home.jsx'
+export { default as Details } from './Details.jsx'
+export { default as Profile } from './Profile.jsx'
+export { default as Chat } from './Chat.jsx'
+export { default as Listing } from './Listing'
+export { default as Auth } from './Auth'
+export { default as Users } from './Users'
+export { default as AddForm } from './AddForm.jsx'

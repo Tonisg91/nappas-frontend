@@ -1,98 +1,95 @@
-import React, { useState, useEffect, useRef } from "react"
-import { connect } from "react-redux"
-import io from "socket.io-client"
-import { getChat, addMessage } from "reducers/chats.reducers"
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { getChat, addMessage } from 'reducers/chats.reducers'
 
-const SOCKET_SERVER_URL = "http://localhost:5000"
+const ChatRoom = ({ match, chat, getChat, currentUser, addMessage, socketRef }) => {
+    const [chatId, setChatId] = useState(match.params.roomId)
+    const [currentMessages, setCurrentMessages] = useState([])
+    const [newMessage, setNewMessage] = useState('')
 
-const ChatRoom = ({ match, chat, getChat, currentUser, addMessage }) => {
-  const [chatId, setChatId] = useState(match.params.roomId)
-  const [currentMessages, setCurrentMessages] = useState([])
-  const [newMessage, setNewMessage] = useState("")
-  const socketRef = useRef()
 
-  useEffect(() => {
-    socketRef.current = io.connect(SOCKET_SERVER_URL)
-    socketRef.current.emit("join", chatId)
+    useEffect(() => {
+        socketRef.emit('join', chatId)
 
-    if (!chat.messages) socketRef.current.emit("getChat", chatId)
+        if (!chat.messages) socketRef.emit('getChat', chatId)
 
-    socketRef.current.on("getChat", (m) => {
-      getChat(m)
-      setCurrentMessages([...m.messages])
-    })
+        socketRef.on('getChat', (m) => {
+            getChat(m)
+            setCurrentMessages([...m.messages])
+        })
 
-    // socketRef.current.on('your id', (id) => {
-    //     setYourId(id)
-    // })
-    // checkChat()
+        // socketRef.current.on('your id', (id) => {
+        //     setYourId(id)
+        // })
+        // checkChat()
 
-    // socketRef.current.on('join', (body) => {
-    //     setChatId(body)
-    // })
+        // socketRef.current.on('join', (body) => {
+        //     setChatId(body)
+        // })
 
-    socketRef.current.on("message", (message) => {
-      receivedMessage(message)
-    })
+        socketRef.on('message', (message) => {
+            receivedMessage(message)
+        })
 
-    return () => {
-      getChat([])
-      socketRef.current.disconnect()
+        return () => {
+            getChat([])
+            socketRef.disconnect()
+        }
+    }, [])
+
+    function checkChat() {
+        socketRef.emit('getChat', match.params.roomId)
     }
-  }, [])
 
-  function checkChat() {
-    socketRef.current.emit("getChat", match.params.roomId)
-  }
-
-  function receivedMessage(message) {
-    addMessage(message)
-  }
-
-  function sendMessage(e) {
-    e.preventDefault()
-    const messageObject = {
-      msg: {
-        data: newMessage,
-        user: currentUser._id,
-      },
-      chatId: chatId,
+    function receivedMessage(message) {
+        addMessage(message)
     }
-    socketRef.current.emit("send message", messageObject)
-    addMessage({ newMessage, user: currentUser._id })
-    setNewMessage("")
-  }
 
-  return (
-    <>
-      <h1>CHAT</h1>
-      <input
-        value={newMessage}
-        type="text"
-        onChange={({ target }) => setNewMessage(target.value)}
-      />
-      {currentMessages.map((m, idx) => {
-        return <h4 key={m.newMessage + idx}>{m.newMessage}</h4>
-      })}
-      <button onClick={sendMessage}>SEND MESSAGE</button>
-    </>
-  )
+    function sendMessage(e) {
+        e.preventDefault()
+        const messageObject = {
+            msg: {
+                data: newMessage,
+                user: currentUser._id,
+            },
+            chatId: chatId,
+        }
+        socketRef.emit('send message', messageObject)
+        addMessage({ newMessage, user: currentUser._id })
+        setNewMessage('')
+    }
+
+    return (
+        <>
+            <h1>CHAT</h1>
+            <input
+                value={newMessage}
+                type="text"
+                onChange={({ target }) => setNewMessage(target.value)}
+            />
+            {currentMessages.map((m, idx) => {
+                return <h4 key={m.newMessage + idx}>{m.newMessage}</h4>
+            })}
+            <button onClick={sendMessage}>SEND MESSAGE</button>
+        </>
+    )
 }
 
 const mapStateToProps = (state) => {
-  return {
-    currentUser: state.currentUser,
-    chat: state.chat,
-  }
+    return {
+        currentUser: state.currentUser,
+        chat: state.chat,
+        socketRef: state.socket
+    }
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getChat: (chatData) => {
-    dispatch(getChat(chatData))
-  },
-  addMessage: (msg) => {
-    dispatch(addMessage(msg))
-  },
+    getChat: (chatData) => {
+        dispatch(getChat(chatData))
+    },
+    addMessage: (msg) => {
+        dispatch(addMessage(msg))
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom)

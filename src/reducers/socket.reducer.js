@@ -1,17 +1,16 @@
-const GET_LIST = 'GET_LIST'
+const GET_SOCKET_REF = 'GET_SOCKET_REF'
 
 // ACTIONS
-export const getList = (data) => ({
-    type: GET_LIST,
+export const getSocketRef = (data) => ({
+    type: GET_SOCKET_REF,
     payload: data
 })
 
 // REDUCER
-
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (state = [], action) => {
+export default (state = {}, action) => {
     switch (action.type) {
-        case GET_LIST:
+        case GET_SOCKET_REF:
             return action.payload
         default:
             return state
