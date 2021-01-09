@@ -27,7 +27,7 @@ function App(props) {
     const handler = useFetchingHandler()
     const hasData = data.length
 
-    const dataObject = { hasData, socketRef }
+    const dataObject = { hasData, socketRef, currentUser }
     const cbObject = { getList, getUserData, getSocketRef }
 
     useEffect(() => {

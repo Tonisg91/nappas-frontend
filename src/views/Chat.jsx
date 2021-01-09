@@ -3,15 +3,14 @@ import { connect } from 'react-redux'
 import { getChat, addMessage } from 'reducers/chats.reducers'
 import { getSocketRef } from 'reducers/socket.reducer'
 
-const ChatRoom = ({
-    match,
-    chat,
-    getChat,
-    currentUser,
-    addMessage,
-    socketRef,
-    getSocketRef
-}) => {
+const ChatRoom = (props) => {
+    const { match,
+        chat,
+        getChat,
+        currentUser,
+        addMessage,
+        socketRef,
+        getSocketRef } = props
     const [chatId] = useState(match.params.roomId)
     const [flag, setFlag] = useState(false)
     const [newMessage, setNewMessage] = useState('')

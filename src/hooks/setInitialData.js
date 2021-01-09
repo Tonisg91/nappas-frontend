@@ -18,7 +18,7 @@ export default async function setInitialData(handler, dataObject, cb) {
             cb.getUserData(user.data)
         }
 
-        if (!dataObject.socketRef) {
+        if (!dataObject.socketRef && dataObject.currentUser) {
             const socket = io.connect(SOCKET_SERVER_URL)
             cb.getSocketRef(socket)
         }

@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import tokenService from '../utils/tokenService'
-import { logout } from '../reducers/users.reducer'
+import tokenService from 'utils/tokenService'
+import { logout } from 'reducers/users.reducer'
+import { removeSocket } from 'reducers/socket.reducer'
 import { GaEvent } from 'utils/analytics'
 
 export const Profile = ({ currentUser, logout }) => {
@@ -40,7 +41,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     logout: () => {
         dispatch(logout())
-    },
+        dispatch(removeSocket())
+    }
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)
