@@ -9,13 +9,13 @@ import store from 'store'
 import './configs/axios'
 
 ReactDOM.render(
-    <React.StrictMode>
+    <>
         <Provider store={store}>
             <Router>
                 <App />
             </Router>
         </Provider>
-    </React.StrictMode>,
+    </>,
     document.getElementById('root')
 )
 

@@ -13,7 +13,7 @@ const ChatRoom = ({
     getSocketRef
 }) => {
     const [chatId] = useState(match.params.roomId)
-    const [currentMessages, setCurrentMessages] = useState(chat.messages || [])
+    const [flag, setFlag] = useState(false)
     const [newMessage, setNewMessage] = useState('')
 
     useEffect(() => {
@@ -26,54 +26,33 @@ const ChatRoom = ({
     }, [])
 
     useEffect(() => {
-        if (!socketRef) return 
-
-            socketRef.emit('join', chatId)
-    
-            if (!chat.length) {
-                socketRef.emit('getChat', chatId)
-            }
-
-            socketRef.on('getChat', (m) => {
-                console.log('RECEIVE CHAT DATA')
-                getChat(m)
-                setCurrentMessages([...m.messages])
-            })
+        if (!socketRef) return
         
-
-
-        // socketRef.on('your id', (id) => {
-        //     setYourId(id)
-        // })
-        // checkChat()
-
-        // socketRef.on('join', (body) => {
-        //     setChatId(body)
-        // })
-
-        // socketRef.on('message', (message) => {
-        //     receivedMessage(message)
-        // })
-
-        return () => {
-            socketRef.emit('save messages', {
-                chatId,
-                currentMessages
-            })
-            socketRef.disconnect('test')
-            getChat({})
-        }
-    }, [])
+        if (!chat.length) checkChat()
+        
+        socketRef.emit('join', chatId)
+        
+        socketRef.on('getChat', getChatDataToState)
+        
+        socketRef.on('message', receivedMessage)
+    }, [flag])
     
     function checkChat() {
         socketRef.emit('getChat', chatId)
     }
-    function receivedMessage(message) {
+    
+    function getChatDataToState(m) {
+        getChat(m)
+    }
+
+    function receivedMessage (message) {
         addMessage(message)
+        setFlag(false)
     }
 
     function sendMessage(e) {
         e.preventDefault()
+        setFlag(true)
         const messageObject = {
             msg: {
                 data: newMessage,
@@ -82,22 +61,26 @@ const ChatRoom = ({
             chatId: chatId
         }
         socketRef.emit('send message', messageObject)
-        addMessage({ newMessage, user: currentUser._id })
+        addMessage(messageObject.msg)
         setNewMessage('')
     }
+
+    
 
     return (
         <>
             <h1>CHAT</h1>
-            <input
-                value={newMessage}
-                type="text"
-                onChange={({ target }) => setNewMessage(target.value)}
-            />
-            {currentMessages.map((m, idx) => {
+            {chat.messages && chat.messages.map((m, idx) => {
                 return <h4 key={m.data + idx}>{m.data}</h4>
             })}
-            <button onClick={sendMessage}>SEND MESSAGE</button>
+            <form onSubmit={sendMessage} >
+                <input
+                    value={newMessage}
+                    type="text"
+                    onChange={({ target }) => setNewMessage(target.value)}
+                />
+                <button onFocus={this} >SEND MESSAGE</button>
+            </form>
         </>
     )
 }

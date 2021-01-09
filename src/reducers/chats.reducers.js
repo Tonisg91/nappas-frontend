@@ -19,8 +19,7 @@ export default (state = {}, action) => {
         case GET_CHAT:
             return action.payload
         case ADD_MSG:
-            console.log('REDUCER', action.payload)
-            return Object.assign([], state, action.payload)
+            return { ...state, messages: [...state.messages, action.payload] }
         default:
             return state
     }
