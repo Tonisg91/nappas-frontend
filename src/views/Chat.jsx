@@ -30,7 +30,9 @@ const ChatRoom = ({
 
             socketRef.emit('join', chatId)
     
-            if (!chat.messages) checkChat()
+            if (!chat.length) {
+                socketRef.emit('getChat', chatId)
+            }
 
             socketRef.on('getChat', (m) => {
                 console.log('RECEIVE CHAT DATA')
@@ -53,10 +55,14 @@ const ChatRoom = ({
         //     receivedMessage(message)
         // })
 
-        // return () => {
-        //     getChat([])
-        //     socketRef.disconnect()
-        // }
+        return () => {
+            socketRef.emit('save messages', {
+                chatId,
+                currentMessages
+            })
+            socketRef.disconnect('test')
+            getChat({})
+        }
     }, [])
     
     function checkChat() {

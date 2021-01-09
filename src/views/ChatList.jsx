@@ -1,12 +1,15 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { getChat } from 'reducers/chats.reducers'
 
-export const ChatList = ({ chats, currentUser }) => {
+export const ChatList = ({ chats, currentUser, getChat }) => {
     const history = useHistory()
-    const goToChatDetails = (path) => history.push(path)
-    console.log(chats)
-
+    const goToChatDetails = (path, chat) => {
+        getChat(chat)
+        history.push(path)
+    }
+    // TODO: COMPONENT FOR CHATLIST
     const chatList = chats.map((c, idx) => {
         const { guestUser, createdBy, messages } = c
 
@@ -19,7 +22,7 @@ export const ChatList = ({ chats, currentUser }) => {
             <div 
                 key={c._id} 
                 className="chatCard" 
-                onClick={() => goToChatDetails(`/chat/${c._id}`)}
+                onClick={() => goToChatDetails(`/chat/${c._id}`, c)}
                 >
                 <p key={displayedName}>{displayedName}</p>
                 <h1 key={c.title + idx}>{c.announcement.title}</h1>
@@ -42,6 +45,8 @@ const mapStateToProps = ({ currentUser }) => ({
     chats: currentUser ? currentUser.chats : []
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = (dispatch) => ({
+    getChat: (chatData) => dispatch(getChat(chatData))
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatList)
