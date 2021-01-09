@@ -10,6 +10,7 @@ function Navbar() {
             <Link to="/search/informatica">Informatica</Link>
             <Link to="/search/mecanica">Mecánica</Link>
             <Link to="/search/pintura">Pintura</Link>
+            <Link to="/chats">Chats</Link>
             <Link to="/login">Login</Link>
             <Link to="/signup">Signup</Link>
             <Link to="/profile">Profile</Link>

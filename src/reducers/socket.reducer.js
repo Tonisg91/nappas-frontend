@@ -8,7 +8,7 @@ export const getSocketRef = (data) => ({
 
 // REDUCER
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (state = {}, action) => {
+export default (state = null, action) => {
     switch (action.type) {
         case GET_SOCKET_REF:
             return action.payload

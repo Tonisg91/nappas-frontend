@@ -57,6 +57,7 @@ function App(props) {
                 <Route exact path="/search" component={V.Listing} />
                 <Route path="/search/:category" component={V.Listing} />
                 <Route exact path="/item/:id" component={V.Details} />
+                <Route exact path="/chats" component={V.ChatList} />
                 <Route path="/chat/:roomId" component={V.Chat} />
                 <Route path="/user/:userId" component={V.Users} />
                 <Route path="/new-announcement" component={V.AddForm} />

@@ -20,7 +20,7 @@ export default (state = {}, action) => {
             return action.payload
         case ADD_MSG:
             console.log('REDUCER', action.payload)
-            return Object.assign([], ...state, action.payload)
+            return Object.assign([], state, action.payload)
         default:
             return state
     }
